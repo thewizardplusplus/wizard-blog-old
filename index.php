@@ -1,4 +1,7 @@
 <?php
+	// this is required due to a use of the deprecated extension mysql
+	ini_set('display_errors', '0');
+
 	include_once "parameters.php";
 	include "module_message.php";
 	include "module_page.php";
