@@ -1,0 +1,122 @@
+header, footer, nav, article, section {
+	display: block;
+}
+
+body {
+	background-color: rgb(0, 138, 248);
+	font-family: Courier New, monospace;
+}
+
+hr {
+	margin: 0px;
+}
+
+header, footer {
+	margin: 0px 150px 0px 150px;
+	background-color: rgb(51, 200, 21);
+	border: 1px solid rgb(26, 114, 9);
+	text-align: center;
+}
+
+header {
+	border-radius: 12px 12px 0px 0px;
+}
+
+footer {
+	padding: 12px;
+	border-radius: 0px 0px 12px 12px;
+	font-size: smaller;
+}
+
+body > header {
+	background: -moz-linear-gradient(top,  rgb(104, 251, 75),  rgb(40, 178, 13));
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(104, 251, 75)), to(rgb(40, 178, 13)));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = "#68fb4b", endColorstr = "#28b20d");
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = '#68fb4b', endColorstr = '#28b20d')";
+	text-shadow: 5px 5px 5px rgb(64, 64, 64);
+}
+
+body > footer {
+	background: -moz-linear-gradient(top,  rgb(104, 251, 75),  rgb(40, 178, 13));
+	background: -webkit-gradient(linear, left top, left bottom, from(rgb(104, 251, 75)), to(rgb(40, 178, 13)));
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = "#68fb4b", endColorstr = "#28b20d");
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType = 0, startColorstr = '#68fb4b', endColorstr = '#28b20d')";
+}
+
+div#page {
+	height: 100%;
+	margin: 0px 250px 0px 250px;
+}
+
+div#message {
+	margin-top: 12px;
+	text-align: center;
+	font-style: italic;
+}
+
+nav {
+	margin: 12px 12px 24px 12px;
+}
+
+div.button {
+	margin: 12px;
+}
+
+a.button {
+	padding: 3px 5px 3px 5px;
+	background-color: rgb(214, 231, 30);
+	border: 2px solid rgb(194, 209, 27);
+	border-radius: 5px 5px 5px px;
+	color: black;
+	text-decoration: none;
+}
+
+a.button:link, a.button:visited {
+	color: black;
+}
+
+article {
+	margin-bottom: 12px;
+	padding: 5px;
+	background-color: white;
+	border: 5px solid rgb(0, 60, 248);
+	border-radius: 12px 12px 12px 12px;
+}
+
+article header, article footer {
+	margin: 0px;
+	background-color: white;
+	border: 0px;
+	text-align: left;
+}
+
+h2 {
+	margin: 0px;
+}
+
+time {
+	font-size: smaller;
+	color: rgb(128, 128, 128);
+}
+
+form {
+	margin: 12px;
+	padding: 12px;
+	background-color: rgb(192, 192, 192);
+	border: 2px solid rgb(128, 128, 128);
+	border-radius: 12px 12px 12px 12px;
+}
+
+table.list {
+	margin-left: 24px;
+}
+
+table.footer {
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+span.error {
+	font-weight: bold;
+	color: rgb(255, 0, 0);
+}
