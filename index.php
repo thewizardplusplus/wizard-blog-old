@@ -39,7 +39,7 @@
 		</div>
 		<hr />
 		<footer>
-			&copy; волшебник Мерлин, 2011 год; e-mail для связи: <a href = "mailto://thewizardmerlin@yandex.ru">thewizardmerlin@yandex.ru</a>.
+			Copyright &copy; 2011-<?= date('Y') ?> thewizardplusplus
 		</footer>
 	</body>
 </html>
