@@ -43,7 +43,7 @@
 				?>
 			</div>
 			<footer>
-				&copy; 2011 thewizardmerlin. E-mail для связи: <a href = "mailto:thewizardmerlin@yandex.ru">thewizardmerlin@yandex.ru</a>.
+				Copyright &copy; 2011-<?= date('Y') ?> thewizardplusplus
 			</footer>
 		</section>
 	</body>
