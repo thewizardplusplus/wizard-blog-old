@@ -8,6 +8,7 @@
 	include "page_delete_picture.php";
 	include "page_delete_file.php";
 	include "page_backup.php";
+	include "page_post.php";
 	include "page_view.php";
 	include "page_login.php";
 
@@ -36,12 +37,16 @@
 				pageDeleteFile();
 			} else if ($page == "backup") {
 				pageBackup();
+			} else if ($page == "post") {
+				pagePost();
 			} else {
 				pageView();
 			}
 		} else {
 			if ($page == "login") {
 				pageLogin();
+			} else if ($page == "post") {
+				pagePost();
 			} else {
 				pageView();
 			}

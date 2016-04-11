@@ -5,8 +5,6 @@
 	function action() {
 		global $database;
 		global $message;
-		global $blog_user_name;
-		global $blog_password_md5;
 
 		if (isset($_GET["action"])) {
 			$action = $_GET["action"];
@@ -14,7 +12,7 @@
 				if ($action == "logout") {
 					session_unset();
 					session_destroy();
-					$message = "До свидания, " . $blog_user_name . ".";
+					$message = "До свидания, " . BLOG_USER_NAME . ".";
 				} else if ($action == "add") {
 					if (isset($_POST["title"]) and isset($_POST["text"])) {
 						$time_and_date = date("H:i:s d.m.Y");
@@ -60,9 +58,9 @@
 					backup();
 				}
 			} else if ($action == "login") {
-				if (isset($_POST["password"]) and md5($_POST["password"]) == $blog_password_md5) {
+				if (isset($_POST["password"]) and md5($_POST["password"]) == BLOG_PASSWORD_MD5_HASH) {
 					$_SESSION["login"] = true;
-					$message = "Здравствуй, " . $blog_user_name . ".";
+					$message = "Здравствуй, " . BLOG_USER_NAME . ".";
 				} else {
 					session_unset();
 					session_destroy();
