@@ -1,17 +1,63 @@
 <?php
+	define("NUMBER_OF_BACKUPS", 2);
+
+	function archiveDirectory($path, $archive, $archive_name) {
+		$files = scandir($path);
+		foreach ($files as $file) {
+			if ($file == "." or $file == "..") {
+				continue;
+			}
+
+			$file_path = $file;
+			if ($path != ".") {
+				$file_path = $path . $file_path;
+			}
+			if (is_file($file_path)) {
+				$archive->addFile($file_path, $archive_name . "/" . $file_path);
+			} else if ($file_path != "backup") {
+				$file_path .= "/";
+				archiveDirectory($file_path, $archive, $archive_name);
+			}
+		}
+	}
+
 	function backup() {
 		global $database;
 		global $message;
 
-		$zip = new ZipArchive();
-		$archive_name = "backup/backup__" . date("H_i_s__d_m_Y") . ".zip";
-		$result = $zip->open($archive_name, ZIPARCHIVE::CREATE);
+		$archive = new ZipArchive();
+		$archive_name = "backup-" . date("Ymd-His");
+		$archive_file_name = "backup/" . $archive_name . ".zip";
+		$result = $archive->open($archive_file_name, ZIPARCHIVE::CREATE);
 		if ($result) {
-			$database_dump = "";
+			$database_dump = "SET NAMES 'utf8';\n"
+				. "SET character_set_client = 'utf8';\n"
+				. "SET character_set_connection = 'utf8';\n"
+				. "SET character_set_results = 'utf8';\n"
+				. "SET character_set_server = 'utf8';\n"
+				. "SET collation_connection = 'utf8_general_ci';\n"
+				. "SET collation_server = 'utf8_general_ci';\n"
+				. "ALTER DATABASE `" . MYSQL_DATABASE_NAME . "` DEFAULT CHARACTER SET = utf8 DEFAULT COLLATE = utf8_general_ci;\n"
+				. "\n"
+				. "DROP TABLE IF EXISTS `" . MYSQL_DATABASE_NAME . "`.`posts`;\n"
+				. "CREATE TABLE `" . MYSQL_DATABASE_NAME . "`.`posts` (\n"
+					. "\t`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n"
+					. "\t`title` VARCHAR(96) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n"
+					. "\t`text` VARCHAR(10000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n"
+					. "\t`create_time` VARCHAR(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n"
+					. "\t`modify_time` VARCHAR(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL\n"
+				. ") ENGINE = MyISAM DEFAULT CHARACTER SET = utf8 DEFAULT COLLATE = utf8_general_ci;\n"
+				. "\n";
 			$query_result = mysql_query("SELECT * FROM posts", $database);
 			if ($query_result) {
 				while ($row = mysql_fetch_array($query_result)) {
-					$database_dump = $database_dump . sprintf("INSERT INTO posts VALUES (0, \"%s\", \"%s\", \"%s\", \"%s\");\n", $row["title"], $row["text"], $row["create_time"], $row["modify_time"]);
+					$title = addslashes($row["title"]);
+					$title = str_replace("\n", "", $title);
+					$title = str_replace("\r", "", $title);
+					$text = addslashes($row["text"]);
+					$text = str_replace("\n", "", $text);
+					$text = str_replace("\r", "", $text);
+					$database_dump = $database_dump . sprintf("INSERT INTO `" . MYSQL_DATABASE_NAME . "`.`posts` (`id`, `title`, `text`, `create_time`, `modify_time`) VALUES (NULL, \"%s\", \"%s\", \"%s\", \"%s\");\n", $title, $text, $row["create_time"], $row["modify_time"]);
 				}
 
 				$file = fopen("backup/database_dump.sql", "w");
@@ -20,26 +66,11 @@
 				}
 				fclose($file);
 			}
+			$archive->addFile("backup/database_dump.sql", $archive_name . "/database_dump.sql");
 
-			$files = scandir(".");
-			array_shift($files);
-			array_shift($files);
-			foreach ($files as $file) {
-				if (!is_dir($file)) {
-					$zip->addFile($file, $file);
-				} else if ($file == "images" or $file == "files") {
-					$subfiles = scandir($file . "/");
-					array_shift($subfiles);
-					array_shift($subfiles);
-					foreach ($subfiles as $subfile) {
-						if (!is_dir($subfile)) {
-							$zip->addFile($file . "/" . $subfile, $file . "/" . $subfile);
-						}
-					}
-				}
-			}
-			$zip->addFile("backup/database_dump.sql", "database_dump/database_dump.sql");
-			$zip->close();
+			archiveDirectory(".", $archive, $archive_name);
+
+			$archive->close();
 
 			unlink("backup/database_dump.sql");
 
@@ -47,7 +78,7 @@
 			array_shift($backups);
 			array_shift($backups);
 			$backups = array_reverse($backups);
-			for ($i = 0; $i < 6; $i++) {
+			for ($i = 0; $i < NUMBER_OF_BACKUPS; $i++) {
 				array_shift($backups);
 			}
 			$deleted = False;
@@ -58,9 +89,9 @@
 				}
 			}
 
-			$message = "Бэкап успешно создан:<br />\n\t\t\t\t<a href = \"" . $archive_name . "\">" . $archive_name . "</a>.";
+			$message = "Бэкап успешно создан: <a href = \"" . $archive_file_name . "\">" . $archive_name . ".zip</a>.";
 			if ($deleted) {
-				$message = $message . "<br />\n\t\t\t\tУстаревшие бэкапы успешно удалены.";
+				$message = $message . "<br />\n\t\t\t\t\tУстаревшие бэкапы успешно удалены.";
 			}
 		}
 	}
