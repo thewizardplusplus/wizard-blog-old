@@ -30,23 +30,24 @@
 		$archive_file_name = "backup/" . $archive_name . ".zip";
 		$result = $archive->open($archive_file_name, ZIPARCHIVE::CREATE);
 		if ($result) {
-			$database_dump = "SET NAMES 'utf8';\n" .
-				"SET collation_connection = 'utf8_general_ci';\n" .
-				"SET collation_server = 'utf8_general_ci';\n" .
-				"SET character_set_client = 'utf8';\n" .
-				"SET character_set_connection = 'utf8';\n" .
-				"SET character_set_results = 'utf8';\n" .
-				"SET character_set_server = 'utf8';\n" .
-				"\n" .
-				"DROP TABLE IF EXISTS `posts`;\n" .
-				"CREATE TABLE `posts` (\n" .
-				"\t`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n" .
-				"\t`title` VARCHAR(96) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n" .
-				"\t`text` VARCHAR(10000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n" .
-				"\t`create_time` VARCHAR(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n" .
-				"\t`modify_time` VARCHAR(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL\n" .
-				") ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;\n" .
-				"\n";
+			$database_dump = "SET NAMES 'utf8';\n"
+				. "SET character_set_client = 'utf8';\n"
+				. "SET character_set_connection = 'utf8';\n"
+				. "SET character_set_results = 'utf8';\n"
+				. "SET character_set_server = 'utf8';\n"
+				. "SET collation_connection = 'utf8_general_ci';\n"
+				. "SET collation_server = 'utf8_general_ci';\n"
+				. "ALTER DATABASE `" . MYSQL_DATABASE_NAME . "` DEFAULT CHARACTER SET = utf8 DEFAULT COLLATE = utf8_general_ci;\n"
+				. "\n"
+				. "DROP TABLE IF EXISTS `" . MYSQL_DATABASE_NAME . "`.`posts`;\n"
+				. "CREATE TABLE `" . MYSQL_DATABASE_NAME . "`.`posts` (\n"
+					. "\t`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n"
+					. "\t`title` VARCHAR(96) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n"
+					. "\t`text` VARCHAR(10000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n"
+					. "\t`create_time` VARCHAR(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,\n"
+					. "\t`modify_time` VARCHAR(19) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL\n"
+				. ") ENGINE = MyISAM DEFAULT CHARACTER SET = utf8 DEFAULT COLLATE = utf8_general_ci;\n"
+				. "\n";
 			$query_result = mysql_query("SELECT * FROM posts", $database);
 			if ($query_result) {
 				while ($row = mysql_fetch_array($query_result)) {
@@ -56,7 +57,7 @@
 					$text = addslashes($row["text"]);
 					$text = str_replace("\n", "", $text);
 					$text = str_replace("\r", "", $text);
-					$database_dump = $database_dump . sprintf("INSERT INTO `posts` (`id`, `title`, `text`, `create_time`, `modify_time`) VALUES (NULL, \"%s\", \"%s\", \"%s\", \"%s\");\n", $title, $text, $row["create_time"], $row["modify_time"]);
+					$database_dump = $database_dump . sprintf("INSERT INTO `" . MYSQL_DATABASE_NAME . "`.`posts` (`id`, `title`, `text`, `create_time`, `modify_time`) VALUES (NULL, \"%s\", \"%s\", \"%s\", \"%s\");\n", $title, $text, $row["create_time"], $row["modify_time"]);
 				}
 
 				$file = fopen("backup/database_dump.sql", "w");
