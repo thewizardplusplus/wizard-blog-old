@@ -24,7 +24,7 @@
 					$text = $row["text"];
 					$text = str_replace("\n", "", $text);
 					$text = str_replace("\r", "", $text);
-					$index = stripos($text, "<hr class = \"cut\" />");
+					$index = stripos($text, "<hr class = 'cut' />");
 					if (!($index === FALSE)) {
 						$text = substr($text, 0, $index);
 						$text .= "\n\t\t\t\t\t<p class = \"read_more\">\n\t\t\t\t\t\t<a class = \"button\" href = \"index.php?page=post&id=" . $row["id"] . "&offset=" . $offset . "\">Читать&nbsp;далее&nbsp;&gt;&gt;</a>\n\t\t\t\t\t</p>";
